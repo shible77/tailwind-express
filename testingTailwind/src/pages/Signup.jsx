@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { TbInfoTriangleFilled } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios'
 
 function Signup() {
   const [data, setData] = useState({
@@ -30,7 +31,19 @@ function Signup() {
     if (data.password !== data.confirmPassword) {
       console.log("passwords don't match");
     }
-    navigate('/verifyEmail')
+    const reqBody = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    }
+    axios.post("http://localhost:5000/api/signup", reqBody)
+    .then((res) =>{
+      if(res.data){
+        navigate('/verifyEmail', {state: { data : res.data}})
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
   };
 
   useEffect(() => {
@@ -63,7 +76,7 @@ function Signup() {
               className="p-2 rounded border border-gray-400 focus:outline-none focus:ring-violet-700 focus:ring-2"
               required
               onChange={(e) => {
-                setData({ ...data, email: e.target.value });
+                setData({ ...data, username: e.target.value });
               }}
             />
           </div>

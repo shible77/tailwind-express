@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 function VerifyEmail() {
   const [code, setCode] = useState("");
-  
+  const location = useLocation();
+  const data  = location.state?.data;
+  console.log(data)
   return (
     <div className="flex items-center justify-center min-h-screen bg-custom-gradient1">
       <div className="flex flex-col px-8 py-4 rounded-xl shadow-2xl bg-transparent w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
         <h1 className="text-2xl text-center">Verify Your Email</h1>
         <p className="mt-5">
-          A verification code has sent to the email: shible0805@gmail.com
+          {`A verification code has sent to the email: ${data.email}`}
         </p>
         <div className="flex flex-col space-y-3 mt-5">
           <label>Provide the verification code here:</label>
@@ -27,7 +30,9 @@ function VerifyEmail() {
           <p>
             Don't receive the code? If your email is wrong change
             <NavLink
-              to="/changeEmail"
+              to={{pathname : '/changeEmail',
+                state : {id : data.verification_Id}
+              }}
               className="text-blue-800 hover:text-blue-600 w-14"
             >
               {" "}
