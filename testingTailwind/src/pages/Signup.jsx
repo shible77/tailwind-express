@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { TbInfoTriangleFilled } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [data, setData] = useState({
@@ -23,12 +24,13 @@ function Signup() {
   const [perfectPass, setPerfectPass] = useState(false);
   const [passMatched, setPassMatched] = useState(false);
 
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     if (data.password !== data.confirmPassword) {
       console.log("passwords don't match");
     }
-    console.log(data);
+    navigate('/verifyEmail')
   };
 
   useEffect(() => {
