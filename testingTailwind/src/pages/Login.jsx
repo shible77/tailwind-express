@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { NavLink } from 'react-router-dom'
 
 function Login() {
   const [data, setData] = useState({
@@ -64,11 +65,13 @@ function Login() {
               </button>
             </div>
           </div>
-
+          <div className="flex flex-col w-full items-end">
+            <NavLink to='/forgotPass' className='text-blue-600 hover:text-blue-800'>Forgot password?</NavLink>
+          </div>
           <div className="flex flex-col">
             <button
               onClick={handleSubmit}
-              className="bg-blue-700 text-white py-2 rounded mt-5 hover:bg-blue-500"
+              className="bg-blue-700 text-white py-2 rounded mt-2 hover:bg-blue-500"
             >
               Login
             </button>

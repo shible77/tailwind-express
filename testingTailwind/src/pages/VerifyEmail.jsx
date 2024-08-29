@@ -1,12 +1,37 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import axios from 'axios'
 
 function VerifyEmail() {
   const [code, setCode] = useState("");
   const location = useLocation();
+  const navigate = useNavigate()
   const data  = location.state?.data;
-  console.log(data)
+  // console.log(data)
+  const handleVerify = () => {
+    const reqBody = {
+      verification_id : data.verification_Id,
+      verification_code : parseInt(code)
+    }
+    axios.post("http://localhost:5000/api/verify", reqBody)
+    .then((res) => {
+      if(res.data.status){
+        navigate('/login')
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  const handleResend = () => {
+    axios.get("http://localhost:5000/api/resendEmail/"+data.verification_Id)
+    .then((res) => {
+      // console.log(res.data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-custom-gradient1">
       <div className="flex flex-col px-8 py-4 rounded-xl shadow-2xl bg-transparent w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
@@ -25,14 +50,13 @@ function VerifyEmail() {
                 setCode(e.target.value);
               }}
             />
-            <button className="p-2 bg-blue-600 rounded w-1/5 ml-1 text-base" onClick={() => {console.log(code)}}>Verify</button>
+            <button className="p-2 bg-blue-600 rounded w-1/5 ml-1 text-base" onClick={handleVerify}>Verify</button>
           </div>
           <p>
             Don't receive the code? If your email is wrong change
             <NavLink
-              to={{pathname : '/changeEmail',
-                state : {id : data.verification_Id}
-              }}
+              to='/changeEmail'
+              state= {{data : data}}
               className="text-blue-800 hover:text-blue-600 w-14"
             >
               {" "}
@@ -42,9 +66,7 @@ function VerifyEmail() {
         </div>
         <button
           className="text-blue-800 hover:text-blue-600 w-24 mt-3"
-          onClick={() => {
-            console.log("Email Sent");
-          }}
+          onClick={handleResend}
         >
           Resend code
         </button>
