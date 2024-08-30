@@ -9,6 +9,7 @@ function ForgotPass() {
         const reqBody = {
             email : email
         }
+        // console.log(reqBody)
         axios.post("http://localhost:5000/api/verifyUser", reqBody)
         .then(res => {
             if(res.data.status){
@@ -21,7 +22,7 @@ function ForgotPass() {
   return (
     <div className='flex justify-center items-center min-h-screen bg-custom-gradient1'>
         <div className='flex flex-col py-4 px-8 rounded-xl shadow-2xl bg-transparent w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl'>
-            <h1 className='text-3xl text-center mb-4'>Forgot Password</h1>
+            <h1 className='text-3xl text-center mb-4'>Password Recovery</h1>
             <div className='flex flex-col w-full mt-2 space-y-3'>
                 <label className='text-base'>Provide your email to verify you : </label>
                 <div className='flex flex-row w-full justify-center items-center'>

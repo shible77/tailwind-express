@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { TbInfoTriangleFilled } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import { FaCheckCircle } from "react-icons/fa";
 import axios from 'axios'
 
 function Signup() {
@@ -24,10 +25,13 @@ function Signup() {
 
   const [perfectPass, setPerfectPass] = useState(false);
   const [passMatched, setPassMatched] = useState(false);
+  const [showLoader, setShowLoader] = useState(false)
+  const [showOkay, setSowOkay] = useState(false)
 
   const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
+    setShowLoader(true)
     if (data.password !== data.confirmPassword) {
       console.log("passwords don't match");
     }
@@ -39,9 +43,15 @@ function Signup() {
     axios.post("http://localhost:5000/api/signup", reqBody)
     .then((res) =>{
       if(res.data){
-        navigate('/verifyEmail', {state: { data : res.data}})
+        setShowLoader(false)
+        setSowOkay(true)
+        setTimeout(() => {
+          navigate('/verifyEmail', {state: { data : res.data}})
+          setSowOkay(false)
+        }, 1000)
       }
     }).catch((err) => {
+      setShowLoader(false)
       console.log(err)
     })
   };
@@ -168,9 +178,10 @@ function Signup() {
           <div className="flex flex-col">
             <button
               onClick={handleSubmit}
-              className="bg-blue-700 text-white py-2 rounded mt-5 hover:bg-blue-500 text-center"
+              className="bg-blue-700 text-white py-2 rounded mt-5 hover:bg-blue-500 flex justify-center items-center"
+              disabled={showLoader}
             >
-              Sign Up
+              {showLoader ? (<div className="w-6 h-6 border-4 border-t-4 border-t-blue-500 border-gray-200 rounded-full animate-spin"></div>) : showOkay ? <FaCheckCircle className="w-6 h-6" color="green"/> : "Sign Up"}
             </button>
           </div>
         </div>

@@ -50,7 +50,7 @@ function NavBar() {
               </h6>
             </NavLink>
             <NavLink to="/signup" className="flex justify-center items-center">
-              <button className="px-4 py-2 text-white rounded text-xl bg-indigo-600 hover:bg-indigo-200 justify-center">
+              <button className="px-4 py-2 text-black rounded text-xl bg-indigo-600 hover:bg-indigo-800 hover:text-white justify-center">
                 Sign up
               </button>
             </NavLink>
