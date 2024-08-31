@@ -1,13 +1,22 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Loader from "../components/Loader";
+import { FaCheckCircle } from "react-icons/fa";
 
 function VEFPass() {
   const [code, setCode] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const { data } = location.state || {};
+  const [showLoader, setShowLoader] = useState(false);
+  const [showOkay, setShowOkay] = useState(false);
   const submitCode = () => {
+    if(code === ''){
+      alert('Please enter the verification code');
+      return
+    }
+    setShowLoader(true)
     const reqBody = {
       verification_id: data.verification_Id,
       verification_code: parseInt(code),
@@ -16,10 +25,17 @@ function VEFPass() {
       .post("http://localhost:5000/api/verifyCode", reqBody)
       .then((res) => {
         if (res.data.status) {
-          navigate("/resetPass", { state: { data: res.data } });
+          setShowLoader(false)
+          setShowOkay(true)
+          setTimeout(() => {
+            navigate("/resetPass", { state: { data: res.data } });
+            setShowOkay(false)
+          }, 1000)
+          
         }
       })
       .catch((err) => {
+        setShowLoader(false)
         console.log(err);
       });
   };
@@ -54,9 +70,10 @@ function VEFPass() {
             />
             <button
               onClick={submitCode}
-              className="p-2 bg-green-600 hover:bg-green-900 w-1/5 ml-1 rounded hover:text-white"
+              disabled={showLoader}
+              className="p-2 bg-green-600 hover:bg-green-900 w-1/5 ml-1 rounded hover:text-white flex justify-center items-center"
             >
-              Verify
+              {showLoader ? <Loader h='h-6' w='w-6'/> : showOkay ? <FaCheckCircle className="w-6 h-6 rounded-full bg-white" color="green"/>  : "Verify"}
             </button>
           </div>
         </div>

@@ -1,36 +1,55 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import axios from 'axios'
+import axios from "axios";
+import Loader from "../components/Loader";
+import { FaCheckCircle } from "react-icons/fa";
 
 function VerifyEmail() {
   const [code, setCode] = useState("");
   const location = useLocation();
-  const navigate = useNavigate()
-  const data  = location.state?.data;
+  const navigate = useNavigate();
+  const data = location.state?.data;
+  const [showLoader, setShowLoader] = useState(false);
+  const [showOkay, setShowOkay] = useState(false);
   // console.log(data)
   const handleVerify = () => {
-    const reqBody = {
-      verification_id : data.verification_Id,
-      verification_code : parseInt(code)
+    if(code === ''){
+        alert('Please enter verification code')
+        return
     }
-    axios.post("http://localhost:5000/api/verify", reqBody)
-    .then((res) => {
-      if(res.data.status){
-        navigate('/login')
-      }
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
+    setShowLoader(true);
+    const reqBody = {
+      verification_id: data.verification_Id,
+      verification_code: parseInt(code),
+    };
+    axios
+      .post("http://localhost:5000/api/verify", reqBody)
+      .then((res) => {
+        if (res.data.status) {
+          setShowLoader(false);
+          setShowOkay(true);
+          setTimeout(() => {
+            navigate("/login");
+            setShowOkay(false);
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        setShowLoader(false);
+        console.log(err);
+      });
+  };
 
   const handleResend = () => {
-    axios.get("http://localhost:5000/api/resendEmail/"+data.verification_Id)
-    .then((res) => {
-      // console.log(res.data)
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
+    axios
+      .get("http://localhost:5000/api/resendEmail/" + data.verification_Id)
+      .then((res) => {
+        // console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-custom-gradient1">
@@ -50,13 +69,19 @@ function VerifyEmail() {
                 setCode(e.target.value);
               }}
             />
-            <button className="p-2 bg-blue-600 rounded w-1/5 ml-1 text-base" onClick={handleVerify}>Verify</button>
+            <button
+              className="p-2 bg-blue-600 hover:bg-blue-900 hover:text-white rounded w-1/5 ml-1 text-base flex justify-center items-center"
+              onClick={handleVerify}
+              disabled={showLoader}
+            >
+              {showLoader ? <Loader h='h-6' w='w-6'/> : showOkay ? <FaCheckCircle className="w-6 h-6" color="green"/> : "Verify"}
+            </button>
           </div>
           <p>
             Don't receive the code? If your email is wrong change
             <NavLink
-              to='/changeEmail'
-              state= {{data : data}}
+              to="/changeEmail"
+              state={{ data: data }}
               className="text-blue-800 hover:text-blue-600 w-14"
             >
               {" "}
